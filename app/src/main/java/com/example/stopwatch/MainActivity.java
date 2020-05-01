@@ -1,5 +1,6 @@
 package com.example.stopwatch;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,14 +9,14 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     
-    private  int seconds;
+    private  int milliseconds;
     private boolean running;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         runStopwatch();
     }
 
@@ -29,26 +30,25 @@ public class MainActivity extends AppCompatActivity {
 
     public void reset(View view) {
         running = false;
-        seconds = 0;
+        milliseconds = 0;
     }
-    
+
     private  void runStopwatch() {
-        final TextView textView = (TextView) findViewById(R.id.timeView);
+        final TextView textView = findViewById(R.id.timeView);
         final Handler handler = new Handler();
-        handler.post(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                int Hours = seconds/3600;
-                int Minutes = (seconds%3600)/60;
-                int Seconds = seconds%60;
+                int minutes = milliseconds /600;
+                int seconds = (milliseconds %100)/100;
+                int millisec = milliseconds %100;
 
-                String time = String.format("%d:%02d:%02d", Hours, Minutes, Seconds);
+                @SuppressLint("DefaultLocale") String time = String.format("%d:%02d:%02d", minutes, seconds, millisec);
                 textView.setText(time);
                 if(running){
-                    seconds++;
+                    milliseconds++;
                 }
-                handler.postDelayed(this, 1000);
             }
-        });
+        },100);
     }
 }
